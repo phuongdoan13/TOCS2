@@ -7,7 +7,30 @@ public class LexicalAnalyser {
 
     public static List<Token> analyse(String sourceCode) throws LexicalException {
         //Turn the input String into a list of Tokens!
-        return Collections.emptyList();
+        List<Token> collection = new ArrayList<Token>();
+        //String line = "public class foo { public static void main(String[] args){ int i = 0; if (i == 2) { i = i + 1; System.out.println(\"Hi\"); } else { i = i * 2; } } }";
+        String[] splt = sourceCode.split("((?<=(\\{|\\}|\\|\\||&&|<|>|!|=|\\+|\\*|-|%|/|\\)|\\(|;|\\s|\"|'))|(?=(\\{|\\}|\\|\\||&&|<|>|=|!|\\+|\\*|-|%|/|\\)|\\(|;|\\s|\"|')))");
+
+        for(int i = 0; i < splt.length; i++){
+            if(splt[i].equals(" ")) {
+                // if the current element is a whitespace
+                i += 1;
+            }else if(splt[i].equals("=") && i != splt.length - 1 && splt[i+1].equals("=")){
+                // if the current element is an =, and follow by an = (i.e ==)
+                i += 1;
+                collection.add(tokenFromString("==").get());
+            }else{
+                // other input
+                Optional<Token> s = tokenFromString(splt[i]);
+                if(s.isPresent()){
+                    collection.add(s.get());
+                }else{
+                    throw new LexicalException("Invalid input: " + splt[i]);
+                }
+            }
+
+        }
+        return collection;
     }
 
     private static Optional<Token> tokenFromString(String t) {
