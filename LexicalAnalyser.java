@@ -1,3 +1,5 @@
+import com.sun.corba.se.impl.oa.toa.TOA;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +21,12 @@ public class LexicalAnalyser {
                 // if the current element is an =, and follow by an = (i.e ==)
                 i += 1;
                 collection.add(tokenFromString("==").get());
-            }else{
+            }else if(i != splt.length - 1 && i != 0 && splt[i+1].equals("'") && splt[i-1].equals("'")){
+                collection.add(new Token(Token.TokenType.CHARLIT, splt[i]));
+            }else if(i != splt.length - 1 && i != 0 && splt[i+1].equals("\"") && splt[i-1].equals("\"")){
+                collection.add(new Token(Token.TokenType.STRINGLIT, splt[i]));
+            }
+            else{
                 // other input
                 Optional<Token> s = tokenFromString(splt[i]);
                 if(s.isPresent()){
@@ -102,6 +109,21 @@ public class LexicalAnalyser {
                 return Optional.of(Token.TokenType.TRUE);
             case "false":
                 return Optional.of(Token.TokenType.FALSE);
+            case "!=":
+                return Optional.of(Token.TokenType.NEQUAL);
+            case "<":
+                return Optional.of(Token.TokenType.LT);
+            case ">":
+                return Optional.of(Token.TokenType.GT);
+            case "<=":
+                return Optional.of(Token.TokenType.LE);
+            case ">=":
+                return Optional.of(Token.TokenType.GE);
+            case "\"":
+                return Optional.of(Token.TokenType.DQUOTE);
+            case "'":
+                return Optional.of(Token.TokenType.SQUOTE);
+
         }
 
         if (t.matches("\\d+"))
