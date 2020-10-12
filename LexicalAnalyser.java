@@ -14,7 +14,7 @@ public class LexicalAnalyser {
         for(int i = 0; i < splt.length; i++){
             if(splt[i].equals(" ")) {
                 // if the current element is a whitespace
-                i += 1;
+                //i += 1;
             }else if(splt[i].equals("=") && i != splt.length - 1 && splt[i+1].equals("=")){
                 // if the current element is an =, and follow by an = (i.e ==)
                 i += 1;
