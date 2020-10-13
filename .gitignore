@@ -1,1 +1,14 @@
 Runner.java
+/LexicalAnalyser.class
+/LexicalException.class
+/Pair.class
+/ParseTree.class
+/Runner.class
+/Symbol.class
+/SyntacticAnalyser.class
+/SyntacticalAnalysisTests.class
+/SyntaxException.class
+/Token$TokenType.class
+/Token.class
+/TreeNode$Label.class
+/TreeNode.class
