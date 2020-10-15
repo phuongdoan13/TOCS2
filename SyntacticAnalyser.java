@@ -134,7 +134,9 @@ public class SyntacticAnalyser {
                 	//7.1 <<for arith>> -> e
                 	stack.pop();
                 	stack.add(TreeNode.Label.epsilon);
-                } else if (stack.peek() == TreeNode.Label.ifstat && tokens.get(i).getType() == Token.TokenType.IF) {
+                } 
+                
+                else if (stack.peek() == TreeNode.Label.ifstat && tokens.get(i).getType() == Token.TokenType.IF) {
                 	//8.0 <<if>> → if ( <<rel expr>> <<bool expr>> ) { <<los>> } <<else if>>
                 	stack.pop();
                 	stack.add(TreeNode.Label.elseifstat);
@@ -193,6 +195,34 @@ public class SyntacticAnalyser {
                 	stack.add(TreeNode.Label.expr);
                 	stack.add(Token.TokenType.ASSIGN);
                 	stack.add(Token.TokenType.ID);
+                }
+                
+                else if(stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.TYPE) {
+                	//13.0 <<decl>> → <<type>> <<ID>> <<poss assign>>
+                	stack.pop();
+                	stack.add(TreeNode.Label.possassign);
+                	stack.add(Token.TokenType.ID);
+                	stack.add(Token.TokenType.TYPE);
+                }
+                
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.ASSIGN) {
+                	//14.0 <<poss assign>> → = <<expr>>
+                	stack.pop();
+                	stack.add(TreeNode.Label.expr);
+                	stack.add(Token.TokenType.ASSIGN);
+                } else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.SEMICOLON) {
+                	//14.1 <<poss assign>> → e
+                	stack.pop();
+                	stack.add(TreeNode.Label.epsilon);
+                }
+                
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.PRINT) {
+                	//15.0 <<print>> → System.out.println ( <<print expr>> )
+                	stack.pop();
+                	stack.add(Token.TokenType.RPAREN);
+                	stack.add(TreeNode.Label.printexpr);
+                	stack.add(Token.TokenType.LBRACE);
+                	stack.add(Token.TokenType.PRINT);
                 }
                 
             }else{
