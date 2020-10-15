@@ -1,3 +1,4 @@
+import javax.swing.tree.TreeNode;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -202,7 +203,7 @@ public class SyntacticAnalyser {
                 	stack.pop();
                 	stack.add(TreeNode.Label.possassign);
                 	stack.add(Token.TokenType.ID);
-                	stack.add(Token.TokenType.TYPE);
+                	stack.add(TreeNode.Label.type);
                 }
                 
                 else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.ASSIGN) {
@@ -224,8 +225,281 @@ public class SyntacticAnalyser {
                 	stack.add(Token.TokenType.LBRACE);
                 	stack.add(Token.TokenType.PRINT);
                 }
-                
-            }else{
+
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.TYPE) {
+                    //16.0 <<type>> → int
+                    stack.pop();
+                    stack.add(Token.TokenType.TYPE);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.TYPE) {
+                    //16.1 <<type>> → boolean
+                    stack.pop();
+                    stack.add(Token.TokenType.TYPE);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.TYPE) {
+                    //16.2 <<type>> → char
+                    stack.pop();
+                    stack.add(Token.TokenType.TYPE);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.TRUE
+                        || tokens.get(i).getType() == Token.TokenType.LPAREN
+                        || tokens.get(i).getType() == Token.TokenType.FALSE
+                        || tokens.get(i).getType() == Token.TokenType.ID
+                        || tokens.get(i).getType() == Token.TokenType.NUM)) {
+                    //17 <<expr>> → <<rel expr>> <<bool expr>>
+                    stack.pop();
+                    stack.add(TreeNode.Label.boolexpr);
+                    stack.add(TreeNode.Label.relexpr);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.TYPE) {
+                    //17.1 <<expr>> → <<char expr>>
+                    stack.pop();
+                    stack.add(TreeNode.Label.charexpre);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.SQUOTE) {
+                    //18 <<char expr>> → ' <<char>> '
+                    stack.pop();
+                    stack.add(Token.TokenType.SQUOTE);
+                    stack.add(Token.TokenType.CHARLIT);
+                    stack.add(Token.TokenType.SQUOTE);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.EQUAL
+                || tokens.get(i).getType() == Token.TokenType.NEQUAL
+                || tokens.get(i).getType() == Token.TokenType.AND
+                || tokens.get(i).getType() == Token.TokenType.OR
+                || )) {
+                    //19 <<bool expr>> → <<bool op>> <<rel expr>> <<bool expr>>
+                    stack.pop();
+                    stack.add(TreeNode.Label.boolexpr);
+                    stack.add(TreeNode.Label.relexpr);
+                    stack.add(TreeNode.Label.boolop);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.LPAREN
+                || tokens.get(i).getType() == Token.TokenType.SEMICOLON )) {
+                    //19.1 <<bool expr>> → ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.epsilon);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.EQUAL
+                        || tokens.get(i).getType() == Token.TokenType.NEQUAL )) {
+                    //20.0 <<bool op>> → <<bool eq>>
+                    stack.pop();
+                    stack.add(TreeNode.Label.booleq);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.AND
+                        || tokens.get(i).getType() == Token.TokenType.OR )) {
+                    //20.1 <<bool op>> →  <<bool log>>
+                    stack.pop();
+                    stack.add(TreeNode.Label.boollog);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.EQUAL) {
+                    //21.0 <<bool eq>> → ==
+                    stack.pop();
+                    stack.add(Token.TokenType.EQUAL);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.NEQUAL) {
+                    //21.1 <<bool eq>> → !=
+                    stack.pop();
+                    stack.add(Token.TokenType.NEQUAL);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.AND) {
+                    //22.0 <<bool log>> → && | ||
+                    stack.pop();
+                    stack.add(Token.TokenType.AND);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.OR) {
+                    //22.1 <<bool log>> → ||
+                    stack.pop();
+                    stack.add(Token.TokenType.OR);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.LPAREN
+                        || tokens.get(i).getType() == Token.TokenType.ID
+                        || tokens.get(i).getType() == Token.TokenType.NUM)) {
+                    //23.0 <<rel expr>> → <<arith expr>> <<rel expr'>> | true | false
+                    stack.pop();
+                    stack.add(TreeNode.Label.relexprprime);
+                    stack.add(TreeNode.Label.arithexpr);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.TRUE) {
+                    //23.1 <<rel expr>> → true | false
+                    stack.pop();
+                    stack.add(Token.TokenType.TRUE);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.FALSE) {
+                    //23.2 <<rel expr>> → false
+                    stack.pop();
+                    stack.add(Token.TokenType.FALSE);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.LT
+                        || tokens.get(i).getType() == Token.TokenType.GT
+                        || tokens.get(i).getType() == Token.TokenType.LE
+                        || tokens.get(i).getType() == Token.TokenType.GE)) {
+                    //24.0 <<rel expr'>> → ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.arithexpr);
+                    stack.add(TreeNode.Label.relop);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.EQUAL
+                        || tokens.get(i).getType() == Token.TokenType.NEQUAL
+                        || tokens.get(i).getType() == Token.TokenType.RPAREN
+                        || tokens.get(i).getType() == Token.TokenType.AND
+                        || tokens.get(i).getType() == Token.TokenType.OR
+                        || tokens.get(i).getType() == Token.TokenType.SEMICOLON )) {
+                    //24.1 <<rel expr'>> → <<rel op>> <<arith expr>> | ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.epsilon);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.LT) {
+                    //25.0 <<rel op>> → < | <= | > | >=
+                    stack.pop();
+                    stack.add(Token.TokenType.LT);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.GT) {
+                    //25.1 <<rel op>> →  <= | > | >=
+                    stack.pop();
+                    stack.add(Token.TokenType.LE);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.LE) {
+                    //25.2 <<rel op>> →  > | >=
+                    stack.pop();
+                    stack.add(Token.TokenType.GT);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.GE) {
+                    //25.3 <<rel op>> → >=
+                    stack.pop();
+                    stack.add(Token.TokenType.GE);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.GE
+                || tokens.get(i).getType() == Token.TokenType.FALSE
+                || tokens.get(i).getType() == Token.TokenType.ID)) {
+                    //26 <<arith expr>> → <<term>> <<arith expr'>>
+                    stack.pop();
+                    stack.add(TreeNode.Label.arithexprprime);
+                    stack.add(TreeNode.Label.term);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.PLUS) {
+                    //27.0 <<arith expr'>> → + <<term>> <<arith expr'>> | - <<term>> <<arith expr'>> | ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.arithexprprime);
+                    stack.add(TreeNode.Label.term);
+                    stack.add(Token.TokenType.PLUS);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.PLUS) {
+                    //27.1 <<arith expr'>> → - <<term>> <<arith expr'>> | ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.arithexprprime);
+                    stack.add(TreeNode.Label.term);
+                    stack.add(Token.TokenType.MINUS);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.EQUAL ||
+                        || tokens.get(i).getType() == Token.TokenType.NEQUAL
+                        || tokens.get(i).getType() == Token.TokenType.LT
+                        || tokens.get(i).getType() == Token.TokenType.GT
+                        || tokens.get(i).getType() == Token.TokenType.LE
+                        || tokens.get(i).getType() == Token.TokenType.GE
+                        || tokens.get(i).getType() == Token.TokenType.RPAREN
+                        || tokens.get(i).getType() == Token.TokenType.AND
+                        || tokens.get(i).getType() == Token.TokenType.OR
+                        || tokens.get(i).getType() == Token.TokenType.SEMICOLON)) {
+                    //27.2 <<arith expr'>> → ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.epsilon);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.LPAREN ||
+                        || tokens.get(i).getType() == Token.TokenType.ID
+                        || tokens.get(i).getType() == Token.TokenType.NUM )) {
+                    //28.0 <<term>> → <<factor>> <<term'>>
+                    stack.pop();
+                    stack.add(TreeNode.Label.termprime);
+                    stack.add(TreeNode.Label.factor);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.TIMES) {
+                    //29.0 <<term'>> → * <<factor>> <<term'>> | / <<factor>> <<term'>> | % <<factor>> <<term'>> | ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.termprime);
+                    stack.add(TreeNode.Label.factor);
+                    stack.add(Token.TokenType.TIMES);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.DIVIDE) {
+                    //29.1 <<term'>> → / <<factor>> <<term'>> | % <<factor>> <<term'>> | ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.termprime);
+                    stack.add(TreeNode.Label.factor);
+                    stack.add(Token.TokenType.DIVIDE);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.MOD) {
+                    //29.2 <<term'>> → % <<factor>> <<term'>> | ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.termprime);
+                    stack.add(TreeNode.Label.factor);
+                    stack.add(Token.TokenType.MOD);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.TIMES
+                ||tokens.get(i).getType() == Token.TokenType.PLUS
+                ||tokens.get(i).getType() == Token.TokenType.MINUS
+                ||tokens.get(i).getType() == Token.TokenType.ASSIGN
+                ||tokens.get(i).getType() == Token.TokenType.EQUAL
+                || tokens.get(i).getType() == Token.TokenType.NEQUAL
+                || tokens.get(i).getType() == Token.TokenType.LT
+                || tokens.get(i).getType() == Token.TokenType.GT
+                || tokens.get(i).getType() == Token.TokenType.LE
+                || tokens.get(i).getType() == Token.TokenType.GE
+                || tokens.get(i).getType() == Token.TokenType.RPAREN
+                || tokens.get(i).getType() == Token.TokenType.AND
+                || tokens.get(i).getType() == Token.TokenType.OR
+                || tokens.get(i).getType() == Token.TokenType.SEMICOLON)) {
+                    //29.3 <<term'>> → ε
+                    stack.pop();
+                    stack.add(TreeNode.Label.epsilon);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.LPAREN) {
+                    //30.0 <<factor>> → ( <<arith expr>> ) | <<ID>> | <<num>>
+                    stack.pop();
+                    stack.add(Token.TokenType.RPAREN);
+                    stack.add(TreeNode.Label.arithexpr);
+                    stack.add(Token.TokenType.LPAREN);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.FALSE) {
+                    //30.1 <<factor>> → <<ID>> | <<num>>
+                    stack.pop();
+                    stack.add(Token.TokenType.ID);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.NUM) {
+                    //30.2 <<factor>> → <<num>>
+                    stack.pop();
+                    stack.add(Token.TokenType.NUM);
+                }
+
+                else if (stack.peek() == TreeNode.Label.possif  && (tokens.get(i).getType() == Token.TokenType.LPAREN
+                ||tokens.get(i).getType() == Token.TokenType.TRUE
+                ||tokens.get(i).getType() == Token.TokenType.FALSE
+                ||tokens.get(i).getType() == Token.TokenType.ID
+                ||tokens.get(i).getType() == Token.TokenType.NUM)) {
+                    //31.0 <<print expr>> → <<rel expr>> <<bool expr>> | "<<string lit>> "
+                    stack.pop();
+                    stack.add(TreeNode.Label.boolexpr);
+                    stack.add(TreeNode.Label.relexpr);
+                }
+                else if (stack.peek() == TreeNode.Label.possif  && tokens.get(i).getType() == Token.TokenType.DQUOTE) {
+                    //31.1 <<print expr>> →"<<string lit>> "
+                    stack.pop();
+                    stack.add(Token.TokenType.DQUOTE);
+                    stack.add(Token.TokenType.STRINGLIT);
+                    stack.add(Token.TokenType.DQUOTE);
+                }
+                else{
                 stack.pop();
                 // then add the leave (terminal) to parse tree
             }
