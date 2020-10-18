@@ -22,14 +22,16 @@ class TreeNode {
     private List<TreeNode> children;
 
     public TreeNode(Label label, TreeNode parent) {
-        this.label = label;
+        // Non terminal
+    	this.label = label;
         this.token = Optional.empty();
         this.parent = parent;
         children = new ArrayList<TreeNode>();
     }
 
     public TreeNode(Label label, Token token, TreeNode parent) {
-        this.label = label;
+        //terminal
+    	this.label = label;
         this.token = Optional.of(token);
         this.parent = parent;
         children = new ArrayList<TreeNode>();
