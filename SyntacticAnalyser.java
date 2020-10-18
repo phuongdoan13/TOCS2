@@ -266,100 +266,135 @@ public class SyntacticAnalyser {
                     stack.add(new Pair(Token.TokenType.PRINT, current));
                 } else if (stack.peek().fst() == TreeNode.Label.type && tokens.get(i).getValue().get().equals("int")) {
                     //16.0 <<type>> → int
+                    TreeNode current = new TreeNode(TreeNode.Label.type, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.TYPE);
+                    stack.add(new Pair(Token.TokenType.TYPE, current));
                 } else if (stack.peek().fst() == TreeNode.Label.type && tokens.get(i).getValue().get().equals("boolean")) {
                     //16.1 <<type>> → boolean
+                    TreeNode current = new TreeNode(TreeNode.Label.type, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.TYPE);
-                } else if (stack.peek().fst() == TreeNode.Label.type && tokens.get(i).getValue().get().equals("int")) {
+                    stack.add(new Pair(Token.TokenType.TYPE, current));
+                } else if (stack.peek().fst() == TreeNode.Label.type && tokens.get(i).getValue().get().equals("char")) {
                     //16.2 <<type>> → char
+                    TreeNode current = new TreeNode(TreeNode.Label.type, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.TYPE);
+                    stack.add(new Pair(Token.TokenType.TYPE, current));
                 } else if (stack.peek().fst() == TreeNode.Label.expr && (tokens.get(i).getType() == Token.TokenType.TRUE
                         || tokens.get(i).getType() == Token.TokenType.LPAREN
                         || tokens.get(i).getType() == Token.TokenType.FALSE
                         || tokens.get(i).getType() == Token.TokenType.ID
                         || tokens.get(i).getType() == Token.TokenType.NUM)) {
                     //17 <<expr>> → <<rel expr>> <<bool expr>>
+                    TreeNode current = new TreeNode(TreeNode.Label.expr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.boolexpr);
-                    stack.add(TreeNode.Label.relexpr);
+                    stack.add(new Pair(TreeNode.Label.boolexpr, current));
+                    stack.add(new Pair(TreeNode.Label.relexpr, current));
                 } else if (stack.peek().fst() == TreeNode.Label.expr && tokens.get(i).getType() == Token.TokenType.SQUOTE) {
                     //17.1 <<expr>> → <<char expr>>
+                    TreeNode current = new TreeNode(TreeNode.Label.expr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.charexpr);
+                    stack.add(new Pair(TreeNode.Label.charexpr, current));
                 } else if (stack.peek().fst() == TreeNode.Label.charexpr && tokens.get(i).getType() == Token.TokenType.SQUOTE) {
                     //18 <<char expr>> → ' <<char>> '
+                    TreeNode current = new TreeNode(TreeNode.Label.charexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.SQUOTE);
-                    stack.add(Token.TokenType.CHARLIT);
-                    stack.add(Token.TokenType.SQUOTE);
+                    stack.add(new Pair(Token.TokenType.SQUOTE, current));
+                    stack.add(new Pair(Token.TokenType.CHARLIT, current));
+                    stack.add(new Pair(Token.TokenType.SQUOTE, current);
                 } else if (stack.peek().fst() == TreeNode.Label.boolexpr && (
                         tokens.get(i).getType() == Token.TokenType.EQUAL
                                 || tokens.get(i).getType() == Token.TokenType.NEQUAL
                                 || tokens.get(i).getType() == Token.TokenType.AND
-                                || tokens.get(i).getType() == Token.TokenType.OR
-                )) {
+                                || tokens.get(i).getType() == Token.TokenType.OR)) {
                     //19 <<bool expr>> → <<bool op>> <<rel expr>> <<bool expr>>
+                    TreeNode current = new TreeNode(TreeNode.Label.boolexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.boolexpr);
-                    stack.add(TreeNode.Label.relexpr);
-                    stack.add(TreeNode.Label.boolop);
+                    stack.add(new Pair(TreeNode.Label.boolexpr, current));
+                    stack.add(new Pair(TreeNode.Label.relexpr, current));
+                    stack.add(new Pair(TreeNode.Label.boolop, current));
                 } else if (stack.peek().fst() == TreeNode.Label.boolexpr && (tokens.get(i).getType() == Token.TokenType.RPAREN
                         || tokens.get(i).getType() == Token.TokenType.SEMICOLON)) {
+                    TreeNode current = new TreeNode(TreeNode.Label.boolexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     //19.1 <<bool expr>> → ε
                     stack.pop();
-                    stack.add(TreeNode.Label.epsilon);
+                    stack.add(new Pair(TreeNode.Label.epsilon, current));
                 } else if (stack.peek().fst() == TreeNode.Label.boolop && (tokens.get(i).getType() == Token.TokenType.EQUAL
                         || tokens.get(i).getType() == Token.TokenType.NEQUAL)) {
                     //20.0 <<bool op>> → <<bool eq>>
+                    TreeNode current = new TreeNode(TreeNode.Label.boolop, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.booleq);
+                    stack.add(new Pair(TreeNode.Label.booleq, current));
                 } else if (stack.peek().fst() == TreeNode.Label.boolop && (tokens.get(i).getType() == Token.TokenType.AND
                         || tokens.get(i).getType() == Token.TokenType.OR)) {
                     //20.1 <<bool op>> →  <<bool log>>
+                    TreeNode current = new TreeNode(TreeNode.Label.boolop, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.boollog);
+                    stack.add(new Pair(TreeNode.Label.boollog, current));
                 } else if (stack.peek().fst() == TreeNode.Label.booleq && tokens.get(i).getType() == Token.TokenType.EQUAL) {
                     //21.0 <<bool eq>> → ==
+                    TreeNode current = new TreeNode(TreeNode.Label.booleq, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.EQUAL);
+                    stack.add(new Pair(Token.TokenType.EQUAL, current));
                 } else if (stack.peek().fst() == TreeNode.Label.booleq && tokens.get(i).getType() == Token.TokenType.NEQUAL) {
                     //21.1 <<bool eq>> → !=
+                    TreeNode current = new TreeNode(TreeNode.Label.booleq, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.NEQUAL);
+                    stack.add(new Pair(Token.TokenType.NEQUAL,current));
                 } else if (stack.peek().fst() == TreeNode.Label.boollog && tokens.get(i).getType() == Token.TokenType.AND) {
                     //22.0 <<bool log>> → &&
+                    TreeNode current = new TreeNode(TreeNode.Label.boollog, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.AND);
+                    stack.add(new Pair(Token.TokenType.AND, current));
                 } else if (stack.peek().fst() == TreeNode.Label.boollog && tokens.get(i).getType() == Token.TokenType.OR) {
                     //22.1 <<bool log>> → ||
+                    TreeNode current = new TreeNode(TreeNode.Label.boollog, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.OR);
+                    stack.add(new Pair(Token.TokenType.OR, current));
                 } else if (stack.peek().fst() == TreeNode.Label.relexpr && (tokens.get(i).getType() == Token.TokenType.LPAREN
                         || tokens.get(i).getType() == Token.TokenType.ID
                         || tokens.get(i).getType() == Token.TokenType.NUM)) {
                     //23.0 <<rel expr>> → <<arith expr>> <<rel expr'>>
+                    TreeNode current = new TreeNode(TreeNode.Label.relexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.relexprprime);
-                    stack.add(TreeNode.Label.arithexpr);
+                    stack.add(new Pair(TreeNode.Label.relexprprime, current));
+                    stack.add(new Pair(TreeNode.Label.arithexpr, current));
                 } else if (stack.peek().fst() == TreeNode.Label.relexpr && tokens.get(i).getType() == Token.TokenType.TRUE) {
                     //23.1 <<rel expr>> → true
+                    TreeNode current = new TreeNode(TreeNode.Label.relexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.TRUE);
+                    stack.add(new Pair(Token.TokenType.TRUE, current));
                 } else if (stack.peek().fst() == TreeNode.Label.relexpr && tokens.get(i).getType() == Token.TokenType.FALSE) {
                     //23.2 <<rel expr>> → false
+                    TreeNode current = new TreeNode(TreeNode.Label.relexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.FALSE);
+                    stack.add(new Pair(Token.TokenType.FALSE, current));
                 } else if (stack.peek().fst() == TreeNode.Label.relexprprime && (tokens.get(i).getType() == Token.TokenType.LT
                         || tokens.get(i).getType() == Token.TokenType.GT
                         || tokens.get(i).getType() == Token.TokenType.LE
                         || tokens.get(i).getType() == Token.TokenType.GE)) {
                     //24.0 <<rel expr'>> → <<rel op>> <<arith expr>>
+                    TreeNode current = new TreeNode(TreeNode.Label.relexprprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.arithexpr);
-                    stack.add(TreeNode.Label.relop);
+                    stack.add(new Pair(TreeNode.Label.arithexpr, current));
+                    stack.add(new Pair(TreeNode.Label.relop, current));
                 } else if (stack.peek().fst() == TreeNode.Label.relexprprime && (tokens.get(i).getType() == Token.TokenType.EQUAL
                         || tokens.get(i).getType() == Token.TokenType.NEQUAL
                         || tokens.get(i).getType() == Token.TokenType.RPAREN
@@ -367,43 +402,59 @@ public class SyntacticAnalyser {
                         || tokens.get(i).getType() == Token.TokenType.OR
                         || tokens.get(i).getType() == Token.TokenType.SEMICOLON)) {
                     //24.1 <<rel expr'>> → ε
+                    TreeNode current = new TreeNode(TreeNode.Label.relexprprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.epsilon);
+                    stack.add(new Pair(TreeNode.Label.epsilon, current));
                 } else if (stack.peek().fst() == TreeNode.Label.relop && tokens.get(i).getType() == Token.TokenType.LT) {
                     //25.0 <<rel op>> → <
+                    TreeNode current = new TreeNode(TreeNode.Label.relop, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.LT);
+                    stack.add(new Pair(Token.TokenType.LT, current));
                 } else if (stack.peek().fst() == TreeNode.Label.relop && tokens.get(i).getType() == Token.TokenType.LE) {
                     //25.1 <<rel op>> →  <=
+                    TreeNode current = new TreeNode(TreeNode.Label.relop, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.LE);
+                    stack.add(new Pair(Token.TokenType.LE, current);
                 } else if (stack.peek().fst() == TreeNode.Label.relop && tokens.get(i).getType() == Token.TokenType.GT) {
                     //25.2 <<rel op>> →  >
+                    TreeNode current = new TreeNode(TreeNode.Label.relop, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.GT);
+                    stack.add(new Pair(Token.TokenType.GT, current));
                 } else if (stack.peek().fst() == TreeNode.Label.relop && tokens.get(i).getType() == Token.TokenType.GE) {
                     //25.3 <<rel op>> → >=
+                    TreeNode current = new TreeNode(TreeNode.Label.relop, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.GE);
+                    stack.add(new Pair(Token.TokenType.GE, current));
                 } else if (stack.peek().fst() == TreeNode.Label.arithexpr && (tokens.get(i).getType() == Token.TokenType.LPAREN
                         || tokens.get(i).getType() == Token.TokenType.NUM
                         || tokens.get(i).getType() == Token.TokenType.ID)) {
                     //26 <<arith expr>> → <<term>> <<arith expr'>>
+                    TreeNode current = new TreeNode(TreeNode.Label.arithexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.arithexprprime);
-                    stack.add(TreeNode.Label.term);
+                    stack.add(new Pair(TreeNode.Label.arithexprprime, current));
+                    stack.add(new Pair(TreeNode.Label.term, current));
                 } else if (stack.peek().fst() == TreeNode.Label.arithexprprime && tokens.get(i).getType() == Token.TokenType.PLUS) {
                     //27.0 <<arith expr'>> → + <<term>> <<arith expr'>>
+                    TreeNode current = new TreeNode(TreeNode.Label.arithexprprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.arithexprprime);
-                    stack.add(TreeNode.Label.term);
-                    stack.add(Token.TokenType.PLUS);
+                    stack.add(new Pair(TreeNode.Label.arithexprprime, current));
+                    stack.add(new Pair(TreeNode.Label.term, current));
+                    stack.add(new Pair)(Token.TokenType.PLUS, current);
                 } else if (stack.peek().fst() == TreeNode.Label.arithexprprime && tokens.get(i).getType() == Token.TokenType.MINUS) {
-                    //27.1 <<arith expr'>> → - <<term>> <<arith expr'>> | ε
+                    //27.1 <<arith expr'>> → - <<term>> <<arith expr'>>
+                    TreeNode current = new TreeNode(TreeNode.Label.arithexprprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.arithexprprime);
-                    stack.add(TreeNode.Label.term);
-                    stack.add(Token.TokenType.MINUS);
+                    stack.add(new Pair(TreeNode.Label.arithexprprime, current));
+                    stack.add(new Pair(TreeNode.Label.term, current));
+                    stack.add(new Pair(Token.TokenType.MINUS, current));
                 } else if (stack.peek().fst() == TreeNode.Label.arithexprprime && (tokens.get(i).getType() == Token.TokenType.EQUAL
                         || tokens.get(i).getType() == Token.TokenType.NEQUAL
                         || tokens.get(i).getType() == Token.TokenType.LT
@@ -415,79 +466,101 @@ public class SyntacticAnalyser {
                         || tokens.get(i).getType() == Token.TokenType.OR
                         || tokens.get(i).getType() == Token.TokenType.SEMICOLON)) {
                     //27.2 <<arith expr'>> → ε
+                    TreeNode current = new TreeNode(TreeNode.Label.arithexprprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.epsilon);
+                    stack.add(new Pair(TreeNode.Label.epsilon, current));
                 } else if (stack.peek().fst() == TreeNode.Label.term && (tokens.get(i).getType() == Token.TokenType.LPAREN
                         || tokens.get(i).getType() == Token.TokenType.ID
                         || tokens.get(i).getType() == Token.TokenType.NUM)) {
                     //28.0 <<term>> → <<factor>> <<term'>>
+                    TreeNode current = new TreeNode(TreeNode.Label.term, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.termprime);
-                    stack.add(TreeNode.Label.factor);
+                    stack.add(new Pair(TreeNode.Label.termprime, current));
+                    stack.add(new Pair(TreeNode.Label.factor, current));
                 } else if (stack.peek().fst() == TreeNode.Label.termprime && tokens.get(i).getType() == Token.TokenType.TIMES) {
                     //29.0 <<term'>> → * <<factor>> <<term'>>
+                    TreeNode current = new TreeNode(TreeNode.Label.termprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.termprime);
-                    stack.add(TreeNode.Label.factor);
-                    stack.add(Token.TokenType.TIMES);
+                    stack.add(new Pair(TreeNode.Label.termprime, current));
+                    stack.add(new Pair(TreeNode.Label.factor, current));
+                    stack.add(new Pair(Token.TokenType.TIMES,current));
                 } else if (stack.peek().fst() == TreeNode.Label.termprime && tokens.get(i).getType() == Token.TokenType.DIVIDE) {
                     //29.1 <<term'>> → / <<factor>> <<term'>>
+                    TreeNode current = new TreeNode(TreeNode.Label.termprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.termprime);
-                    stack.add(TreeNode.Label.factor);
-                    stack.add(Token.TokenType.DIVIDE);
+                    stack.add(new Pair(TreeNode.Label.termprime, current));
+                    stack.add(new Pair(TreeNode.Label.factor, current));
+                    stack.add(new Pair(Token.TokenType.DIVIDE, current));
                 } else if (stack.peek().fst() == TreeNode.Label.termprime && tokens.get(i).getType() == Token.TokenType.MOD) {
                     //29.2 <<term'>> → % <<factor>> <<term'>>
+                    TreeNode current = new TreeNode(TreeNode.Label.termprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.termprime);
-                    stack.add(TreeNode.Label.factor);
-                    stack.add(Token.TokenType.MOD);
+                    stack.add(new Pair(TreeNode.Label.termprime, current));
+                    stack.add(new Pair(TreeNode.Label.factor, current));
+                    stack.add(new Pair(Token.TokenType.MOD, current));
                 } else if (stack.peek().fst() == TreeNode.Label.termprime && (
                         tokens.get(i).getType() == Token.TokenType.PLUS
-                        || tokens.get(i).getType() == Token.TokenType.MINUS
-                        || tokens.get(i).getType() == Token.TokenType.EQUAL
-                        || tokens.get(i).getType() == Token.TokenType.NEQUAL
-                        || tokens.get(i).getType() == Token.TokenType.LT
-                        || tokens.get(i).getType() == Token.TokenType.GT
-                        || tokens.get(i).getType() == Token.TokenType.LE
-                        || tokens.get(i).getType() == Token.TokenType.GE
-                        || tokens.get(i).getType() == Token.TokenType.RPAREN
-                        || tokens.get(i).getType() == Token.TokenType.AND
-                        || tokens.get(i).getType() == Token.TokenType.OR
-                        || tokens.get(i).getType() == Token.TokenType.SEMICOLON)) {
+                                || tokens.get(i).getType() == Token.TokenType.MINUS
+                                || tokens.get(i).getType() == Token.TokenType.EQUAL
+                                || tokens.get(i).getType() == Token.TokenType.NEQUAL
+                                || tokens.get(i).getType() == Token.TokenType.LT
+                                || tokens.get(i).getType() == Token.TokenType.GT
+                                || tokens.get(i).getType() == Token.TokenType.LE
+                                || tokens.get(i).getType() == Token.TokenType.GE
+                                || tokens.get(i).getType() == Token.TokenType.RPAREN
+                                || tokens.get(i).getType() == Token.TokenType.AND
+                                || tokens.get(i).getType() == Token.TokenType.OR
+                                || tokens.get(i).getType() == Token.TokenType.SEMICOLON)) {
                     //29.3 <<term'>> → ε
+                    TreeNode current = new TreeNode(TreeNode.Label.termprime, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.epsilon);
+                    stack.add(new Pair(TreeNode.Label.epsilon, current));
                 } else if (stack.peek().fst() == TreeNode.Label.factor && tokens.get(i).getType() == Token.TokenType.LPAREN) {
                     //30.0 <<factor>> → ( <<arith expr>> )
+                    TreeNode current = new TreeNode(TreeNode.Label.factor, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.RPAREN);
-                    stack.add(TreeNode.Label.arithexpr);
-                    stack.add(Token.TokenType.LPAREN);
+                    stack.add(new Pair(Token.TokenType.RPAREN, current));
+                    stack.add(new Pair(TreeNode.Label.arithexpr, current));
+                    stack.add(new Pair(Token.TokenType.LPAREN, current));
                 } else if (stack.peek().fst() == TreeNode.Label.factor && tokens.get(i).getType() == Token.TokenType.ID) {
                     //30.1 <<factor>> → <<ID>>
+                    TreeNode current = new TreeNode(TreeNode.Label.factor, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.ID);
+                    stack.add(new Pair(Token.TokenType.ID, current));
                 } else if (stack.peek().fst() == TreeNode.Label.factor && tokens.get(i).getType() == Token.TokenType.NUM) {
                     //30.2 <<factor>> → <<num>>
+                    TreeNode current = new TreeNode(TreeNode.Label.factor, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.NUM);
+                    stack.add(new Pair(Token.TokenType.NUM, current));
                 } else if (stack.peek().fst() == TreeNode.Label.printexpr &&
                         (tokens.get(i).getType() == Token.TokenType.LPAREN
-                        || tokens.get(i).getType() == Token.TokenType.TRUE
-                        || tokens.get(i).getType() == Token.TokenType.FALSE
-                        || tokens.get(i).getType() == Token.TokenType.ID
-                        || tokens.get(i).getType() == Token.TokenType.NUM)) {
+                                || tokens.get(i).getType() == Token.TokenType.TRUE
+                                || tokens.get(i).getType() == Token.TokenType.FALSE
+                                || tokens.get(i).getType() == Token.TokenType.ID
+                                || tokens.get(i).getType() == Token.TokenType.NUM)) {
                     //31.0 <<print expr>> → <<rel expr>> <<bool expr>>
+                    TreeNode current = new TreeNode(TreeNode.Label.printexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(TreeNode.Label.boolexpr);
-                    stack.add(TreeNode.Label.relexpr);
+                    stack.add(new Pair(TreeNode.Label.boolexpr, current));
+                    stack.add(new Pair(TreeNode.Label.relexpr, current));
                 } else if (stack.peek().fst() == TreeNode.Label.printexpr && tokens.get(i).getType() == Token.TokenType.DQUOTE) {
                     //31.1 <<print expr>> →"<<string lit>> "
+                    TreeNode current = new TreeNode(TreeNode.Label.printexpr, stack.peek().snd());
+                    stack.peek().snd().addChild(current);
                     stack.pop();
-                    stack.add(Token.TokenType.DQUOTE);
-                    stack.add(Token.TokenType.STRINGLIT);
-                    stack.add(Token.TokenType.DQUOTE);
+                    stack.add(new Pair(Token.TokenType.DQUOTE, current));
+                    stack.add(new Pair(Token.TokenType.STRINGLIT, current));
+                    stack.add(new Pair(Token.TokenType.DQUOTE, current));
                 }else{
                     throw new SyntaxException("No such rule");
                 }
