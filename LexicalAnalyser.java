@@ -7,8 +7,10 @@ public class LexicalAnalyser {
 
     public static List<Token> analyse(String sourceCode) throws LexicalException {
         //Turn the input String into a list of Tokens!
+        if(sourceCode.equals("")){return null;}
         List<Token> collection = new ArrayList<Token>();
         //String line = "public class foo { public static void main(String[] args){ int i = 0; if (i == 2) { i = i + 1; System.out.println(\"Hi\"); } else { i = i * 2; } } }";
+
         String[] splt = sourceCode.split("((?<=(\\{|\\}|\\|\\||&&|<|>|!|=|\\+|\\*|-|%|/|\\)|\\(|;|\\s|\"|'))|(?=(\\{|\\}|\\|\\||&&|<|>|=|!|\\+|\\*|-|%|/|\\)|\\(|;|\\s|\"|')))");
 
         for(int i = 0; i < splt.length; i++){
